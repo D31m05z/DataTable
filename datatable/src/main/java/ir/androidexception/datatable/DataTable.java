@@ -280,6 +280,10 @@ public class DataTable extends CardView {
 
     public void addRow(DataTableRow row) { adapter.addItem(row); }
 
+    public void removeRow(int position) { adapter.removeItem(position); }
+
+    public void clear() { adapter.clear(); }
+
     private void fetchAttrs(@NonNull Context context, @Nullable AttributeSet attrs){
         @SuppressLint("CustomViewStyleable")
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.DataTable, 0, 0);

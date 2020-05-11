@@ -111,7 +111,11 @@ public class RowItemAdapter extends RecyclerView.Adapter<RowItemAdapter.RowItemV
     }
 
     public DataTableRow getItem(int position) {
-        return values.get(position);
+        if(position >= 0 &&  position < values.size() ) {
+            return values.get(position);
+        } else {
+           return null;
+        }
     }
 
     public ArrayList<DataTableRow> getItems() { return values; }
@@ -127,4 +131,15 @@ public class RowItemAdapter extends RecyclerView.Adapter<RowItemAdapter.RowItemV
         }
         notifyDataSetChanged();
     }
+
+    public void removeItem(int position) {
+        values.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    public void clear() {
+        values.clear();
+        notifyDataSetChanged();
+    }
+
 }
