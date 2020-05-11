@@ -100,7 +100,6 @@ public class RowItemAdapter extends RecyclerView.Adapter<RowItemAdapter.RowItemV
         public RowItemViewHolder(@NonNull View itemView) {
             super(itemView);
             rootItem = itemView.findViewById(R.id.row_item_root);
-
         }
 
         private void removeAllViews(){
@@ -112,4 +111,9 @@ public class RowItemAdapter extends RecyclerView.Adapter<RowItemAdapter.RowItemV
         }
 
     }
+
+    public DataTableRow getItem(int position) {
+        return values.get(position);
+    }
+
 }
