@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -26,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
                 .item("Price", 2)
                 .item("Discount", 2)
                 .build();
+
         ArrayList<DataTableRow> rows = new ArrayList<>();
         for(int i=0;i<200;i++){
             Random r = new Random();
@@ -42,6 +44,19 @@ public class MainActivity extends AppCompatActivity {
         dt.setTypeface(tf);
         dt.setHeader(header);
         dt.setRows(rows);
-        dt.inflate(this);
+
+        dt.inflate(this, new DataTable.OnItemClickListener() {
+            @Override
+            public void onItemClick(DataTableRow row, int position) {
+                String item = row.getValues().isEmpty() ? "" : row.getValues().get(0);
+                Toast.makeText(getApplicationContext(),  item + " click " + position, Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onLongItemClick(DataTableRow row, int position) {
+                String item = row.getValues().isEmpty() ? "" : row.getValues().get(0);
+                Toast.makeText(getApplicationContext(), item + " long " + position, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }
