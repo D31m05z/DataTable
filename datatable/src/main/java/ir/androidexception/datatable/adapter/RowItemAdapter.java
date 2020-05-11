@@ -36,13 +36,11 @@ public class RowItemAdapter extends RecyclerView.Adapter<RowItemAdapter.RowItemV
     private Gravity rowGravity;
     private boolean persianNumber;
 
-    public RowItemAdapter(Context context, ArrayList<DataTableRow> values, ArrayList<Integer> weights, Integer dividerThickness, Integer dividerColor, Integer rowTextColor, Integer rowBackgroundColor,
+    public RowItemAdapter(Context context, ArrayList<Integer> weights, Integer dividerThickness, Integer dividerColor, Integer rowTextColor, Integer rowBackgroundColor,
                           float verticalPadding, float horizontalPadding, float verticalMargin, float horizontalMargin, float rowTextSize,
                           Typeface typeface, Gravity rowGravity, boolean persianNumber) {
         this.context = context;
-
-        if(values!=null) this.values = values;
-        else this.values = new ArrayList<>();
+        this.values = new ArrayList<>();
 
         if(weights!=null) this.weights = weights;
         else this.weights = new ArrayList<>();
@@ -116,4 +114,17 @@ public class RowItemAdapter extends RecyclerView.Adapter<RowItemAdapter.RowItemV
         return values.get(position);
     }
 
+    public ArrayList<DataTableRow> getItems() { return values; }
+
+    public void addItem(DataTableRow item) {
+        values.add(item);
+        notifyDataSetChanged();
+    }
+
+    public void addItems(ArrayList<DataTableRow> items) {
+        for(DataTableRow item : items) {
+            values.add(item);
+        }
+        notifyDataSetChanged();
+    }
 }

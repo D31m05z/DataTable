@@ -56,7 +56,7 @@ public class DataTable extends CardView {
     private int direction;
     private boolean persianNumber;
     private DataTableHeader header;
-    private ArrayList<DataTableRow> rows = new ArrayList<>();
+    private RowItemAdapter adapter;
 
     public DataTable(@NonNull Context context) {
         super(context);
@@ -273,12 +273,12 @@ public class DataTable extends CardView {
     }
 
     public ArrayList<DataTableRow> getRows() {
-        return rows;
+        return adapter.getItems();
     }
 
-    public void setRows(ArrayList<DataTableRow> rows) {
-        this.rows = rows;
-    }
+    public void setRows(ArrayList<DataTableRow> rows) { adapter.addItems(rows); }
+
+    public void addRow(DataTableRow row) { adapter.addItem(row); }
 
     private void fetchAttrs(@NonNull Context context, @Nullable AttributeSet attrs){
         @SuppressLint("CustomViewStyleable")
@@ -339,6 +339,7 @@ public class DataTable extends CardView {
     public void inflate(@NonNull Context context, OnItemClickListener listener) {
         if(this.header==null || this.header.getItems()==null || this.header.getItems().size()==0 || this.header.getWeights()==null || this.header.getWeights().size()==0 || this.header.getItems().size()!=this.header.getWeights().size())
             return;
+
         // table
         LinearLayout tableLinearLayout = ViewGenerator.generateVerticalLinearLayout(context);
         tableLinearLayout.setLayoutDirection(this.direction);
@@ -365,9 +366,10 @@ public class DataTable extends CardView {
         tableLinearLayout.addView(divider);
 
         // recycler view
-        RowItemAdapter adapter = new RowItemAdapter(context, this.rows, this.header.getWeights(), (int)this.dividerThickness, this.dividerColor,
+        adapter = new RowItemAdapter(context, this.header.getWeights(), (int)this.dividerThickness, this.dividerColor,
                 this.rowTextColor, this.rowBackgroundColor, this.rowVerticalPadding, this.rowHorizontalPadding, this.rowVerticalMargin, this.rowHorizontalMargin,
                 this.rowTextSize, this.typeface, this.rowGravity, this.persianNumber);
+
         tableLinearLayout.addView(ViewGenerator.generateRecyclerView(context, adapter, listener));
 
         //card view

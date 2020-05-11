@@ -3,6 +3,7 @@ package ir.androidexception.datatableexample;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -14,12 +15,15 @@ import ir.androidexception.datatable.model.DataTableHeader;
 import ir.androidexception.datatable.model.DataTableRow;
 
 public class MainActivity extends AppCompatActivity {
+    private DataTable dataTable;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        DataTable dt = findViewById(R.id.dt);
+        dataTable = findViewById(R.id.dt);
+
         Typeface tf = Typeface.createFromAsset(getAssets(),"fonts/iran_sans.ttf");
         DataTableHeader header = new DataTableHeader.Builder()
                 .item("Product Name" , 3)
@@ -28,24 +32,10 @@ public class MainActivity extends AppCompatActivity {
                 .item("Discount", 2)
                 .build();
 
-        ArrayList<DataTableRow> rows = new ArrayList<>();
-        for(int i=0;i<200;i++){
-            Random r = new Random();
-            int random = r.nextInt(i+1);
-            int randomDiscount = r.nextInt(20);
-            DataTableRow row = new DataTableRow.Builder()
-                    .value("Product #" + i)
-                    .value(String.valueOf(random))
-                    .value(String.valueOf(random*1000).concat("$"))
-                    .value(String.valueOf(randomDiscount).concat("%"))
-                    .build();
-            rows.add(row);
-        }
-        dt.setTypeface(tf);
-        dt.setHeader(header);
-        dt.setRows(rows);
+        dataTable.setTypeface(tf);
+        dataTable.setHeader(header);
 
-        dt.inflate(this, new DataTable.OnItemClickListener() {
+        dataTable.inflate(this, new DataTable.OnItemClickListener() {
             @Override
             public void onItemClick(DataTableRow row, int position) {
                 String item = row.getValues().isEmpty() ? "" : row.getValues().get(0);
@@ -58,5 +48,41 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), item + " long " + position, Toast.LENGTH_LONG).show();
             }
         });
+
+        new Task().execute();
+    }
+
+    class Task extends AsyncTask<String, Integer, ArrayList<DataTableRow>> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<DataTableRow> result) {
+
+            dataTable.setRows(result);
+
+            super.onPostExecute(result);
+        }
+
+        @Override
+        protected ArrayList<DataTableRow> doInBackground(String... params) {
+            ArrayList<DataTableRow> rows = new ArrayList<>();
+            for(int i=0;i<200;i++){
+                Random r = new Random();
+                int random = r.nextInt(i+1);
+                int randomDiscount = r.nextInt(20);
+                DataTableRow row = new DataTableRow.Builder()
+                        .value("Product #" + i)
+                        .value(String.valueOf(random))
+                        .value(String.valueOf(random*1000).concat("$"))
+                        .value(String.valueOf(randomDiscount).concat("%"))
+                        .build();
+                rows.add(row);
+            }
+
+            return rows;
+        }
     }
 }
