@@ -25,6 +25,13 @@ import ir.androidexception.datatable.utility.Util;
 import ir.androidexception.datatable.utility.ViewGenerator;
 
 public class DataTable extends CardView {
+
+    public interface OnItemClickListener {
+        void onItemClick(DataTableRow row, int position);
+
+        void onLongItemClick(DataTableRow row, int position);
+    }
+
     private float headerTextSize;
     private float rowTextSize;
     private int headerTextColor;
@@ -273,8 +280,6 @@ public class DataTable extends CardView {
         this.rows = rows;
     }
 
-
-
     private void fetchAttrs(@NonNull Context context, @Nullable AttributeSet attrs){
         @SuppressLint("CustomViewStyleable")
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.DataTable, 0, 0);
@@ -327,7 +332,11 @@ public class DataTable extends CardView {
         }
     }
 
-    public void inflate(@NonNull Context context){
+    public void inflate(@NonNull Context context) {
+        inflate(context, null);
+    }
+
+    public void inflate(@NonNull Context context, OnItemClickListener listener) {
         if(this.header==null || this.header.getItems()==null || this.header.getItems().size()==0 || this.header.getWeights()==null || this.header.getWeights().size()==0 || this.header.getItems().size()!=this.header.getWeights().size())
             return;
         // table
@@ -351,8 +360,6 @@ public class DataTable extends CardView {
         //divider
         View divider = ViewGenerator.generateDivider(context, (int)this.dividerThickness, this.dividerColor);
 
-
-
         // add views
         tableLinearLayout.addView(headerLinearLayout);
         tableLinearLayout.addView(divider);
@@ -361,14 +368,12 @@ public class DataTable extends CardView {
         RowItemAdapter adapter = new RowItemAdapter(context, this.rows, this.header.getWeights(), (int)this.dividerThickness, this.dividerColor,
                 this.rowTextColor, this.rowBackgroundColor, this.rowVerticalPadding, this.rowHorizontalPadding, this.rowVerticalMargin, this.rowHorizontalMargin,
                 this.rowTextSize, this.typeface, this.rowGravity, this.persianNumber);
-        tableLinearLayout.addView(ViewGenerator.generateRecyclerView(context,adapter));
-
+        tableLinearLayout.addView(ViewGenerator.generateRecyclerView(context, adapter, listener));
 
         //card view
         this.addView(tableLinearLayout);
         this.setRadius(this.cornerRadius);
         this.setCardElevation(this.shadow);
     }
-
 
 }

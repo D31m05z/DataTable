@@ -2,19 +2,27 @@ package ir.androidexception.datatable.utility;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.view.GestureDetector;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.ColorInt;
+import androidx.annotation.NonNull;
+import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import ir.androidexception.datatable.DataTable;
 import ir.androidexception.datatable.adapter.RowItemAdapter;
+import ir.androidexception.datatable.model.DataTableRow;
 
 public class ViewGenerator {
     @SuppressLint("RtlHardcoded")
@@ -52,13 +60,36 @@ public class ViewGenerator {
         return tv;
     }
 
-    public static RecyclerView generateRecyclerView(Context context, RowItemAdapter rowItemAdapter){
+    public static RecyclerView generateRecyclerView(Context context, final RowItemAdapter rowItemAdapter, final DataTable.OnItemClickListener itemClickListener){
         RecyclerView recyclerView = new RecyclerView(context);
         RecyclerView.LayoutParams layoutParams = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         recyclerView.setLayoutParams(layoutParams);
         recyclerView.setId(View.generateViewId());
         recyclerView.setAdapter(rowItemAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL,false));
+
+        recyclerView.addOnItemTouchListener(
+                new RecyclerItemClickListener(context, recyclerView ,new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        DataTableRow row = rowItemAdapter.getItem(position);
+
+                        if(itemClickListener != null) {
+                            itemClickListener.onItemClick(row, position);
+                        }
+                    }
+
+                    @Override
+                    public void onLongItemClick(View view, int position) {
+                        DataTableRow row = rowItemAdapter.getItem(position);
+
+                        if(itemClickListener != null) {
+                            itemClickListener.onLongItemClick(row, position);
+                        }
+                    }
+                })
+        );
+
         return recyclerView;
     }
 
